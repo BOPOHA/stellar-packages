@@ -12,7 +12,7 @@ Source1: https://github.com/stellar/go/archive/refs/tags/horizon-v%{version}.tar
 Requires: user(stellar)
 Requires: group(stellar)
 
-BuildRequires: git
+BuildRequires: git >= 2.0
 BuildRequires: golang
 BuildRequires: systemd-rpm-macros
 BuildRequires: postgresql-server
