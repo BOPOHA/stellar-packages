@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name: stellar-core-postgres
-Version: 19.2.0
+Version: 19.3.0
 Release: 1%{?dist}
 Summary: Postgresql configuration for the Stellar Core
 License: Apache 2.0
