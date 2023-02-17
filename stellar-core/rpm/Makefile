@@ -31,3 +31,8 @@ epel7:
 	# config_opts['target_arch'] = 'x86_64'
 	# config_opts['legal_host_arches'] = ('x86_64',)
 	# config_opts['chroot_setup_cmd'] += " llvm-toolset-7.0-clang rh-postgresql12-postgresql-devel rh-postgresql12-postgresql-server epel-release --disableincludes=all"
+
+epel8:
+	spectool --get-files --directory $(PROJECTTMPDIR) $(PROJECTNAME).spec
+	rpkg srpm --spec $(PROJECTNAME).spec --outdir $(PROJECTTMPDIR)
+	mock --no-clean --dnf --config-opts module_enable= --config-opts module_enable=postgresql:13 -r centos-stream+epel-8-x86_64 --resultdir=rpm-results  $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
