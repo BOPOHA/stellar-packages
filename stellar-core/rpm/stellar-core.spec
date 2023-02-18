@@ -20,6 +20,8 @@ Source106: https://api.github.com/repos/stellar/tracy/tarball/7c74f6eb094d29e6b2
 Source107: https://api.github.com/repos/xdrpp/xdrpp/tarball/9fd7ca222bb26337e1443c67b18fbc5019962884#/xdrpp-xdrpp-9fd7ca2.tar.gz
 Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/d2acf4109bf3bb04e40a16d8cbf8b19bef989b70#/stellar-stellar-xdr-d2acf41.tar.gz
 
+#Patch0:        patch-01.patch
+
 # END: submodule sources
 %if 0%{?el7}
 BuildRequires: devtoolset-11-gcc-c++
@@ -69,6 +71,9 @@ tar -zxf  %{SOURCE107} --strip-components 1 -C lib/xdrpp/
 tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
 
 # END: submodules setup
+%if 0%{?fc38}
+patch -p0 < %{_builddir}/{{{ git_dir_name }}}/patch-001.patch
+%endif
 ./autogen.sh
 
 %build

@@ -36,3 +36,4 @@ epel8:
 	spectool --get-files --directory $(PROJECTTMPDIR) $(PROJECTNAME).spec
 	rpkg srpm --spec $(PROJECTNAME).spec --outdir $(PROJECTTMPDIR)
 	mock --no-clean --dnf --config-opts module_enable= --config-opts module_enable=postgresql:13 -r centos-stream+epel-8-x86_64 --resultdir=rpm-results  $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
+	# mock --no-clean --dnf -r fedora-38-x86_64 --resultdir=rpm-results  $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm

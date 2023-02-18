@@ -1,0 +1,10 @@
+--- lib/libmedida/src/medida/histogram.cc	2021-12-16 16:57:02.652813232 +0100
++++ lib/libmedida/src/medida/histogram.cc	2023-02-18 02:37:19.393719526 +0100
+@@ -7,6 +7,7 @@
+ #include <cmath>
+ #include <mutex>
+ #include <algorithm>
++#include <stdexcept>
+
+ #include "medida/stats/exp_decay_sample.h"
+ #include "medida/stats/uniform_sample.h"
