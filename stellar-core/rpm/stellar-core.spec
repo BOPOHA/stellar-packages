@@ -21,12 +21,11 @@ Source107: https://api.github.com/repos/xdrpp/xdrpp/tarball/9fd7ca222bb26337e144
 Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/d2acf4109bf3bb04e40a16d8cbf8b19bef989b70#/stellar-stellar-xdr-d2acf41.tar.gz
 
 # END: submodule sources
-%if 0%{?rhel} && 0%{?rhel} == 7
+%if 0%{?el7}
 BuildRequires: devtoolset-11-gcc-c++
 BuildRequires: rh-postgresql13-postgresql-devel, rh-postgresql13-postgresql-server
 %else
 BuildRequires: clang >= 12
-BuildRequires: gcc-c++ >= 10
 BuildRequires: postgresql-devel >= 13
 BuildRequires: postgresql-server >= 13
 %endif
@@ -73,7 +72,7 @@ tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
 ./autogen.sh
 
 %build
-%if 0%{?rhel} && 0%{?rhel} == 7
+%if 0%{?el7}
     LDFLAGS=-Wl,-rpath,%{_datadir}/%{system_name}/lib/
     source /opt/rh/rh-postgresql13/enable
     source /opt/rh/devtoolset-11/enable
@@ -92,12 +91,12 @@ tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
 %{__install} -d %{buildroot}/var/lib/stellar/core
 %{__install} -d %{buildroot}%{_sysconfdir}/stellar
 
-%if 0%{?rhel} && 0%{?rhel} == 7
+%if 0%{?el7}
     %{__install} -D /opt/rh/rh-postgresql13/root/usr/lib64/libpq.so.rh-postgresql13-5 %{buildroot}%{_datadir}/%{system_name}/lib/libpq.so.rh-postgresql13-5
 %endif
 
 %check
-%if 0%{?rhel} && 0%{?rhel} == 7
+%if 0%{?el7}
 # ./xdrc/xdrc -hh -o tests/xdrtest.hh tests/xdrtest.x
 # g++: error: unrecognized command line option '-std=c++17'
 source /opt/rh/devtoolset-11/enable
@@ -124,7 +123,7 @@ make check
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %dir %attr(0755, stellar, stellar) /var/log/stellar
 %dir %attr(0755, stellar, stellar) /var/lib/stellar/core
-%if 0%{?rhel} && 0%{?rhel} == 7
+%if 0%{?el7}
     %{_datadir}/%{system_name}/lib/libpq.so.rh-postgresql13-5
 %endif
 
