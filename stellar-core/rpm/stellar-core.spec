@@ -69,6 +69,9 @@ tar -zxf  %{SOURCE107} --strip-components 1 -C lib/xdrpp/
 tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
 
 # END: submodules setup
+%if 0%{?fc38}
+patch -p0 < %{_builddir}/{{{ git_dir_name }}}/patch-001.patch
+%endif
 
 %build
 %if 0%{?el7}
@@ -77,9 +80,6 @@ tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
     source /opt/rh/devtoolset-11/enable
 %endif
 %set_build_flags
-%if 0%{?fc38}
-patch -p0 < %{_builddir}/{{{ git_dir_name }}}/patch-001.patch
-%endif
 ./autogen.sh
 %configure
 %make_build
