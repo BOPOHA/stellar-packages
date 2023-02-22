@@ -3,7 +3,7 @@
 
 Name: stellar-core
 Version: 19.7.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
 License: Apache 2.0
@@ -69,7 +69,9 @@ tar -zxf  %{SOURCE107} --strip-components 1 -C lib/xdrpp/
 tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
 
 # END: submodules setup
-./autogen.sh
+%if 0%{?fc38}%{?fc39}
+patch -p0 < %{_builddir}/{{{ git_dir_name }}}/patch-001.patch
+%endif
 
 %build
 %if 0%{?el7}
@@ -77,6 +79,8 @@ tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
     source /opt/rh/rh-postgresql13/enable
     source /opt/rh/devtoolset-11/enable
 %endif
+%set_build_flags
+./autogen.sh
 %configure
 %make_build
 
@@ -128,6 +132,9 @@ make check
 %endif
 
 %changelog
+* Wed Feb 22 2023 Anatolii Vorona <vorona.tolik@gmail.com>
+- mass rebuild v19.7.0 with patch for fc38 and rawhide (Clang 15 and GCC 13)
+
 * Thu Feb 9 2023 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v19.7.0
 
