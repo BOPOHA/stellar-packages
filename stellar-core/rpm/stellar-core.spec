@@ -3,7 +3,7 @@
 
 Name: stellar-core
 Version: 19.7.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
 License: Apache 2.0
@@ -132,6 +132,9 @@ make check
 %endif
 
 %changelog
+* Wed Feb 22 2023 Anatolii Vorona <vorona.tolik@gmail.com>
+- mass rebuild v19.7.0 with patch for fc38 and rawhide (Clang 15 and GCC 13)
+
 * Thu Feb 9 2023 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v19.7.0
 
