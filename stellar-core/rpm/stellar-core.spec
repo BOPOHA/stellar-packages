@@ -69,7 +69,7 @@ tar -zxf  %{SOURCE107} --strip-components 1 -C lib/xdrpp/
 tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
 
 # END: submodules setup
-%if 0%{?fc38}
+%if 0%{?fc38}%{?fc39}
 patch -p0 < %{_builddir}/{{{ git_dir_name }}}/patch-001.patch
 %endif
 
