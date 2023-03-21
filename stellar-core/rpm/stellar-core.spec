@@ -103,6 +103,7 @@ patch -p0 < %{_builddir}/{{{ git_dir_name }}}/patch-001.patch
 %if 0%{?el7}
 # ./xdrc/xdrc -hh -o tests/xdrtest.hh tests/xdrtest.x
 # g++: error: unrecognized command line option '-std=c++17'
+source /opt/rh/rh-postgresql13/enable
 source /opt/rh/devtoolset-11/enable
 %endif
 
