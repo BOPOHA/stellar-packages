@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name: stellar-core-postgres
-Version: 19.8.0
+Version: 19.9.0
 Release: 1%{?dist}
 Summary: Postgresql configuration for the Stellar Core
 License: Apache 2.0
@@ -48,6 +48,9 @@ The stellar-core-postgres package contains config files for postgres core db and
 %systemd_postun_with_restart stellar-core@public.service
 
 %changelog
+* Tue Apr 25 2023 Anatolii Vorona <vorona.tolik@gmail.com>
+- update v19.9.0
+
 * Tue Mar 21 2023 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v19.8.0
 
