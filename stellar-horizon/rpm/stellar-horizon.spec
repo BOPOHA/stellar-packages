@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name: stellar-horizon
-Version: 2.24.1
+Version: 2.26.1
 Release: 1%{?dist}
 Summary: Client-facing API server for the Stellar network
 
@@ -71,6 +71,9 @@ pg_ctl stop
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %changelog
+* Tue Sep 19 2023 Anatolii Vorona <vorona.tolik@gmail.com>
+- update v2.26.1
+
 * Tue Apr 25 2023 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v2.24.1
 
