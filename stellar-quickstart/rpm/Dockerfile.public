@@ -1,12 +1,12 @@
 # test stellar-core-postgres
-FROM fedora:35 as base
+FROM registry.fedoraproject.org/fedora-minimal:38 as base
 RUN echo 'install_weak_deps=False' >> /etc/dnf/dnf.conf
-RUN dnf install postgresql-server dnf-plugins-core -y
-RUN dnf copr enable vorona/stellar-packages -y
+RUN dnf5 install postgresql-server dnf5-plugins -y
+RUN dnf5 copr enable vorona/stellar-packages -y
 
 
 FROM base
-RUN dnf install stellar-core-postgres -y && dnf clean all
+RUN dnf5 install stellar-core-postgres -y && dnf5 clean all
 RUN rpm -qa "stellar-*"
 USER stellar
 WORKDIR /var/lib/stellar
