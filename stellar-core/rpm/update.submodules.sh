@@ -15,6 +15,7 @@ StCoreSubModuleDirs=(
   lib/spdlog
   lib/tracy
   lib/xdrpp
+  src/protocol-curr/xdr
   src/protocol-next/xdr
 )
 

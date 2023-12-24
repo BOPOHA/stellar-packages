@@ -1,5 +1,6 @@
 # required packages:
 # dnf install rpmdevtools rpkg
+.PHONY: epel7
 
 PROJECTNAME=stellar-core
 PROJECTTMPDIR=/tmp/$(PROJECTNAME)
@@ -8,7 +9,7 @@ clean:
 	rm -rf $(PROJECTTMPDIR)
 
 submodules:
-	# https://github.com/stellar/stellar-core/compare/v19.13.0...v19.14.0
+	# https://github.com/stellar/stellar-core/compare/v19.14.0...v20.0.2
 	bash -x update.submodules.sh
 
 spec:
@@ -22,7 +23,7 @@ rpmbuild:
 epel7:
 	spectool --get-files --directory $(PROJECTTMPDIR) $(PROJECTNAME).spec
 	rpkg srpm --spec $(PROJECTNAME).spec --outdir $(PROJECTTMPDIR)
-	mock --no-clean -r custom-epel-7-x86_64 --resultdir=rpm-results  $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
+	mock --enable-network --no-clean -r custom-epel-7-x86_64 --resultdir=rpm-results  $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
 	# need file /etc/mock/custom-epel-7-x86_64.cfg with content:
 	# include('templates/centos-7.tpl')
 	# include('templates/epel-7.tpl')

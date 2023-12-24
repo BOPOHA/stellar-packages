@@ -2,7 +2,7 @@
 %define system_name stellar
 
 Name: stellar-core
-Version: 19.14.0
+Version: 20.0.2
 Release: 1%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
@@ -12,13 +12,14 @@ Source1: https://github.com/stellar/stellar-core/archive/refs/tags/v%{version}.t
 # START: submodule sources
 Source100: https://api.github.com/repos/chriskohlhoff/asio/tarball/c465349fa5cd91a64bb369f5131ceacab2c0c1c3#/chriskohlhoff-asio-asio-1-28-0-0-gc465349.tar.gz
 Source101: https://api.github.com/repos/USCiLab/cereal/tarball/ebef1e929807629befafbb2918ea1a08c7194554#/USCiLab-cereal-v1.3.2-0-gebef1e9.tar.gz
-Source102: https://api.github.com/repos/fmtlib/fmt/tarball/a0b8a92e3d1532361c2f7feb63babc5c18d00ef2#/fmtlib-fmt-10.0.0-0-ga0b8a92.tar.gz
-Source103: https://api.github.com/repos/stellar/medida/tarball/b5b1c5aa63f624749be36ca5bf9efdcd144044e4#/stellar-medida-b5b1c5a.tar.gz
+Source102: https://api.github.com/repos/fmtlib/fmt/tarball/f5e54359df4c26b6230fc61d38aa294581393084#/fmtlib-fmt-10.1.1-0-gf5e5435.tar.gz
+Source103: https://api.github.com/repos/stellar/medida/tarball/f91354b0055de939779d392999975d611b1b1ad5#/stellar-medida-f91354b.tar.gz
 Source104: https://api.github.com/repos/stellar/libsodium/tarball/71d227cf8e4644393a3322f36050f7afdfddc498#/stellar-libsodium-vs2022-0-g71d227c.tar.gz
 Source105: https://api.github.com/repos/gabime/spdlog/tarball/7e635fca68d014934b4af8a1cf874f63989352b7#/gabime-spdlog-v1.12.0-0-g7e635fc.tar.gz
 Source106: https://api.github.com/repos/stellar/tracy/tarball/897aec5b062664d2485f4f9a213715d2e527e0ca#/stellar-tracy-v0.6.3-3431-g897aec5.tar.gz
 Source107: https://api.github.com/repos/xdrpp/xdrpp/tarball/9fd7ca222bb26337e1443c67b18fbc5019962884#/xdrpp-xdrpp-9fd7ca2.tar.gz
-Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/34241a1eb81a715cc75777ca1ed028ea1456645b#/stellar-stellar-xdr-34241a1.tar.gz
+Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/bb54e505f814386a3f45172e0b7e95b7badbe969#/stellar-stellar-xdr-v20-0-gbb54e50.tar.gz
+Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/b3d9e9f43b9a3a4e89652e505ca275573cfab6a1#/stellar-stellar-xdr-b3d9e9f.tar.gz
 
 # END: submodule sources
 %if 0%{?el7}
@@ -35,6 +36,7 @@ Requires: group(stellar)
 
 BuildRequires: automake
 BuildRequires: bison
+BuildRequires: cargo
 BuildRequires: flex
 BuildRequires: git
 BuildRequires: hostname
@@ -66,12 +68,10 @@ tar -zxf  %{SOURCE104} --strip-components 1 -C lib/libsodium/
 tar -zxf  %{SOURCE105} --strip-components 1 -C lib/spdlog/
 tar -zxf  %{SOURCE106} --strip-components 1 -C lib/tracy/
 tar -zxf  %{SOURCE107} --strip-components 1 -C lib/xdrpp/
-tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-next/xdr/
+tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-curr/xdr/
+tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
 
 # END: submodules setup
-%if 0%{?el8}%{?fc38}%{?fc39}%{?fc40}
-patch -p0 < %{_builddir}/{{{ git_dir_name }}}/patch-001.patch
-%endif
 
 %build
 %if 0%{?el7}
@@ -133,6 +133,9 @@ make check
 %endif
 
 %changelog
+* Sat Dec 23 2023 Anatolii Vorona <vorona.tolik@gmail.com>
+- update v20.0.2; protocol version 21
+
 * Sat Sep 23 2023 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v19.14.0 (overlay improvements for tracking, logging, monitoring)
 
