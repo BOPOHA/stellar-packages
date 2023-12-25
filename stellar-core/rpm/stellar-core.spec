@@ -80,7 +80,7 @@ tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
     source /opt/rh/devtoolset-11/enable
 %endif
 %set_build_flags
-./autogen.sh
+NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 %configure
 %make_build
 
