@@ -1,6 +1,13 @@
 %global debug_package %{nil}
 %define system_name stellar
 
+%if 0%{?fc38}%{?fc39}
+# initializes global with_enabled_system_rust to 1
+%bcond_without enabled_system_rust
+%else
+%bcond_with enabled_system_rust
+%endif
+
 Name: stellar-core
 Version: 20.0.2
 Release: 1%{?dist}
@@ -36,7 +43,9 @@ Requires: group(stellar)
 
 BuildRequires: automake
 BuildRequires: bison
-BuildRequires: cargo
+%if %{with enabled_system_rust}
+BuildRequires: cargo >= 1.74.0, cargo < 1.75.0
+%endif
 BuildRequires: flex
 BuildRequires: git
 BuildRequires: hostname
@@ -57,8 +66,7 @@ that are guaranteed to be in agreement across all the participating nodes at all
 {{{ git_dir_setup_macro }}}
 %setup -q -b 1 -T -D -n %{name}-%{version}
 sed -i "s|\x25\x25VERSION\x25\x25|%{version}-%{release}|" src/main/StellarCoreVersion.cpp.in
-git init
-git add -N .
+
 # START: submodules setup
 tar -zxf  %{SOURCE100} --strip-components 1 -C lib/asio/
 tar -zxf  %{SOURCE101} --strip-components 1 -C lib/cereal/
@@ -73,7 +81,16 @@ tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
 
 # END: submodules setup
 
+%if %{without enabled_system_rust}
+./install-rust.sh
+%endif
+
 %build
+
+%if %{without enabled_system_rust}
+source "$HOME/.cargo/env"
+%endif
+
 %if 0%{?el7}
     LDFLAGS=-Wl,-rpath,%{_datadir}/%{system_name}/lib/
     source /opt/rh/rh-postgresql13/enable
