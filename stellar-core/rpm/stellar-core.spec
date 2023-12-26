@@ -85,6 +85,8 @@ tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
 ./install-rust.sh
 %endif
 
+mkdir -p $HOME/.cargo && cp %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
+
 %build
 
 %if %{without enabled_system_rust}
