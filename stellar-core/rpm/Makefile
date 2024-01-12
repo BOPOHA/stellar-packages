@@ -9,7 +9,7 @@ clean:
 	rm -rf $(PROJECTTMPDIR)
 
 submodules:
-	# https://github.com/stellar/stellar-core/compare/v19.14.0...v20.0.2
+	# https://github.com/stellar/stellar-core/compare/v20.0.2...v20.1.0
 	bash -x update.submodules.sh
 
 spec:
@@ -38,7 +38,7 @@ epel8:
 	rpkg srpm --spec $(PROJECTNAME).spec --outdir $(PROJECTTMPDIR)
 	mock --no-clean --dnf --config-opts module_enable= --config-opts module_enable=postgresql:13 -r centos-stream+epel-8-x86_64 --resultdir=rpm-results  $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
 
-fc38:
+fc39:
 	spectool --get-files --directory $(PROJECTTMPDIR) $(PROJECTNAME).spec
 	rpkg srpm --spec $(PROJECTNAME).spec --outdir $(PROJECTTMPDIR)
 	mock --no-clean --dnf -r fedora-38-x86_64 --resultdir=rpm-results  $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm

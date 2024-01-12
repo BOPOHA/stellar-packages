@@ -9,7 +9,7 @@
 %endif
 
 Name: stellar-core
-Version: 20.0.2
+Version: 20.1.0
 Release: 1%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
@@ -152,6 +152,9 @@ make check
 %endif
 
 %changelog
+* Fri Jan 12 2024 Anatolii Vorona <vorona.tolik@gmail.com>
+- update v20.1.0
+
 * Sat Dec 23 2023 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v20.0.2; protocol version 21
 
