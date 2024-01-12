@@ -44,7 +44,7 @@ Requires: group(stellar)
 BuildRequires: automake
 BuildRequires: bison
 %if %{with enabled_system_rust}
-BuildRequires: cargo >= 1.74.0, cargo < 1.75.0
+BuildRequires: cargo
 %endif
 BuildRequires: flex
 BuildRequires: git
