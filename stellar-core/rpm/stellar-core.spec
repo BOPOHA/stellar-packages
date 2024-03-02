@@ -82,6 +82,9 @@ tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
 # END: submodules setup
 
 %if %{without enabled_system_rust}
+%if 0%{?el7}
+    source /opt/rh/devtoolset-11/enable
+%endif
 ./install-rust.sh
 %endif
 
