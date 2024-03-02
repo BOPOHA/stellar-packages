@@ -9,7 +9,7 @@
 %endif
 
 Name: stellar-core
-Version: 20.1.0
+Version: 20.3.0
 Release: 1%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
@@ -25,8 +25,8 @@ Source104: https://api.github.com/repos/stellar/libsodium/tarball/71d227cf8e4644
 Source105: https://api.github.com/repos/gabime/spdlog/tarball/7e635fca68d014934b4af8a1cf874f63989352b7#/gabime-spdlog-v1.12.0-0-g7e635fc.tar.gz
 Source106: https://api.github.com/repos/stellar/tracy/tarball/897aec5b062664d2485f4f9a213715d2e527e0ca#/stellar-tracy-v0.6.3-3431-g897aec5.tar.gz
 Source107: https://api.github.com/repos/xdrpp/xdrpp/tarball/9fd7ca222bb26337e1443c67b18fbc5019962884#/xdrpp-xdrpp-9fd7ca2.tar.gz
-Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/bb54e505f814386a3f45172e0b7e95b7badbe969#/stellar-stellar-xdr-v20-0-gbb54e50.tar.gz
-Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/b3d9e9f43b9a3a4e89652e505ca275573cfab6a1#/stellar-stellar-xdr-b3d9e9f.tar.gz
+Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/b96148cd4acc372cc9af17b909ffe4b12c43ecb6#/stellar-stellar-xdr-v20.1-0-gb96148c.tar.gz
+Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/6a71b137bc49f901bed53c8c215c26213017026c#/stellar-stellar-xdr-6a71b13.tar.gz
 
 # END: submodule sources
 %if 0%{?el7}
@@ -152,6 +152,9 @@ make check
 %endif
 
 %changelog
+* Sat Mar 02 2024 Anatolii Vorona <vorona.tolik@gmail.com>
+- update v20.3.0
+
 * Fri Jan 12 2024 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v20.1.0
 
