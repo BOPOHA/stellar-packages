@@ -1,4 +1,5 @@
 %global debug_package %{nil}
+%global toolchain clang
 %define system_name stellar
 
 %if 0%{?fc38}%{?fc39}
