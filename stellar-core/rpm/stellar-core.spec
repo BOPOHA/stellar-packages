@@ -84,7 +84,7 @@ tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
 
 %if %{without enabled_system_rust}
 %if 0%{?el7}
-    source /opt/rh/devtoolset-11/enable
+    source /opt/rh/llvm-toolset-14.0/enable
 %endif
 ./install-rust.sh
 %endif
@@ -100,7 +100,7 @@ source "$HOME/.cargo/env"
 %if 0%{?el7}
     LDFLAGS=-Wl,-rpath,%{_datadir}/%{system_name}/lib/
     source /opt/rh/rh-postgresql13/enable
-    source /opt/rh/devtoolset-11/enable
+    source /opt/rh/llvm-toolset-14.0/enable
 %endif
 %set_build_flags
 NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
@@ -127,7 +127,7 @@ NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 # ./xdrc/xdrc -hh -o tests/xdrtest.hh tests/xdrtest.x
 # g++: error: unrecognized command line option '-std=c++17'
 source /opt/rh/rh-postgresql13/enable
-source /opt/rh/devtoolset-11/enable
+source /opt/rh/llvm-toolset-14.0/enable
 %endif
 
 make check
