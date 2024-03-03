@@ -32,6 +32,7 @@ Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/6a71b137bc49
 # END: submodule sources
 %if 0%{?el7}
 BuildRequires: llvm-toolset-14.0-clang
+BuildRequires: devtoolset-12-gcc-c++
 BuildRequires: rh-postgresql13-postgresql-devel, rh-postgresql13-postgresql-server
 %else
 BuildRequires: clang >= 12
@@ -83,13 +84,10 @@ tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
 # END: submodules setup
 
 %if %{without enabled_system_rust}
-%if 0%{?el7}
-    source /opt/rh/llvm-toolset-14.0/enable
-%endif
 ./install-rust.sh
 %endif
 
-mkdir -p $HOME/.cargo && cp %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
+cp %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
 
 %build
 
@@ -100,6 +98,7 @@ source "$HOME/.cargo/env"
 %if 0%{?el7}
     LDFLAGS=-Wl,-rpath,%{_datadir}/%{system_name}/lib/
     source /opt/rh/rh-postgresql13/enable
+    source /opt/rh/devtoolset-12/enable
     source /opt/rh/llvm-toolset-14.0/enable
 %endif
 %set_build_flags
@@ -127,6 +126,7 @@ NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 # ./xdrc/xdrc -hh -o tests/xdrtest.hh tests/xdrtest.x
 # g++: error: unrecognized command line option '-std=c++17'
 source /opt/rh/rh-postgresql13/enable
+source /opt/rh/devtoolset-12/enable
 source /opt/rh/llvm-toolset-14.0/enable
 %endif
 
