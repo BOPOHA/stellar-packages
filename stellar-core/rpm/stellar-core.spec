@@ -100,7 +100,7 @@ source "$HOME/.cargo/env"
     source /opt/rh/rh-postgresql13/enable
     source /opt/rh/devtoolset-12/enable
     source /opt/rh/llvm-toolset-14.0/enable
-    RUSTC_LINKER=/opt/rh/llvm-toolset-14.0/root/usr/bin/clang
+    export RUSTC_LINKER=/opt/rh/llvm-toolset-14.0/root/usr/bin/clang
 %endif
 %set_build_flags
 NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
