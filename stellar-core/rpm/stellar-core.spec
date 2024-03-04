@@ -32,7 +32,7 @@ Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/6a71b137bc49
 # END: submodule sources
 %if 0%{?el7}
 BuildRequires: llvm-toolset-14.0-clang
-BuildRequires: devtoolset-12-gcc-c++
+BuildRequires: devtoolset-12-toolchain
 BuildRequires: rh-postgresql13-postgresql-devel, rh-postgresql13-postgresql-server
 %else
 BuildRequires: clang >= 12
