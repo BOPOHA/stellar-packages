@@ -101,6 +101,8 @@ source "$HOME/.cargo/env"
     source /opt/rh/devtoolset-12/enable
     source /opt/rh/llvm-toolset-14.0/enable
     export RUSTC_LINKER=/opt/rh/llvm-toolset-14.0/root/usr/bin/clang
+    export CARGO_UNSTABLE_HOST_CONFIG="true"
+    export CARGO_HOST_LINKER="clang"
 %endif
 %set_build_flags
 NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
