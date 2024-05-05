@@ -9,7 +9,7 @@ clean:
 	rm -rf $(PROJECTTMPDIR)
 
 submodules:
-	# https://github.com/stellar/stellar-core/compare/v20.1.0...v20.3.0
+	# https://github.com/stellar/stellar-core/compare/v20.3.0...v20.4.0
 	bash -x update.submodules.sh
 
 spec:
@@ -18,7 +18,7 @@ spec:
 rpmbuild:
 	spectool --get-files --directory $(PROJECTTMPDIR) $(PROJECTNAME).spec
 	rpkg srpm --spec $(PROJECTNAME).spec --outdir $(PROJECTTMPDIR)
-	rpmbuild --nocheck --rebuild $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
+	rpmbuild --nocheck --recompile $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
 
 epel7:
 	spectool --get-files --directory $(PROJECTTMPDIR) $(PROJECTNAME).spec

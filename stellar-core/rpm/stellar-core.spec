@@ -10,7 +10,7 @@
 %endif
 
 Name: stellar-core
-Version: 20.3.0
+Version: 20.4.0
 Release: 1%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
@@ -20,14 +20,14 @@ Source1: https://github.com/stellar/stellar-core/archive/refs/tags/v%{version}.t
 # START: submodule sources
 Source100: https://api.github.com/repos/chriskohlhoff/asio/tarball/c465349fa5cd91a64bb369f5131ceacab2c0c1c3#/chriskohlhoff-asio-asio-1-28-0-0-gc465349.tar.gz
 Source101: https://api.github.com/repos/USCiLab/cereal/tarball/ebef1e929807629befafbb2918ea1a08c7194554#/USCiLab-cereal-v1.3.2-0-gebef1e9.tar.gz
-Source102: https://api.github.com/repos/fmtlib/fmt/tarball/f5e54359df4c26b6230fc61d38aa294581393084#/fmtlib-fmt-10.1.1-0-gf5e5435.tar.gz
+Source102: https://api.github.com/repos/fmtlib/fmt/tarball/e69e5f977d458f2650bb346dadf2ad30c5320281#/fmtlib-fmt-10.2.1-0-ge69e5f9.tar.gz
 Source103: https://api.github.com/repos/stellar/medida/tarball/f91354b0055de939779d392999975d611b1b1ad5#/stellar-medida-f91354b.tar.gz
 Source104: https://api.github.com/repos/stellar/libsodium/tarball/71d227cf8e4644393a3322f36050f7afdfddc498#/stellar-libsodium-vs2022-0-g71d227c.tar.gz
 Source105: https://api.github.com/repos/gabime/spdlog/tarball/7e635fca68d014934b4af8a1cf874f63989352b7#/gabime-spdlog-v1.12.0-0-g7e635fc.tar.gz
 Source106: https://api.github.com/repos/stellar/tracy/tarball/897aec5b062664d2485f4f9a213715d2e527e0ca#/stellar-tracy-v0.6.3-3431-g897aec5.tar.gz
 Source107: https://api.github.com/repos/xdrpp/xdrpp/tarball/9fd7ca222bb26337e1443c67b18fbc5019962884#/xdrpp-xdrpp-9fd7ca2.tar.gz
-Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/b96148cd4acc372cc9af17b909ffe4b12c43ecb6#/stellar-stellar-xdr-v20.1-0-gb96148c.tar.gz
-Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/6a71b137bc49f901bed53c8c215c26213017026c#/stellar-stellar-xdr-6a71b13.tar.gz
+Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/cdc339f5e74a75e8e558fd1a853397da71f1659a#/stellar-stellar-xdr-v20.1-2-gcdc339f.tar.gz
+Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/df96ebc090a2a4c06ffcd7f2fcf9d7dd771da2ea#/stellar-stellar-xdr-df96ebc.tar.gz
 
 # END: submodule sources
 %if 0%{?el7}
@@ -159,6 +159,9 @@ make check
 %endif
 
 %changelog
+* Sun May 05 2024 Anatolii Vorona <vorona.tolik@gmail.com>
+- update v20.4.0
+
 * Sat Mar 02 2024 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v20.3.0
 

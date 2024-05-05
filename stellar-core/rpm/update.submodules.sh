@@ -27,7 +27,7 @@ function stellar_core_submodule_sources() {
   declare -i i=0
   for smod in "${StCoreSubModuleDirs[@]}"; do
     TarballUrl=$(curl -s "$API_GH_STELLAR_CORE/contents/${smod}?ref=$REF" | sed -n 's#git/trees#tarball#; s#"git_url": "\(.*\)",#\1#p;')
-    SourceUrl=$(curl --output-dir /tmp/ -sLOJ $TarballUrl -w '%{url}#/%{filename_effective}')
+    SourceUrl=$(curl --output-dir /tmp/ -sLOJ $TarballUrl -w '%{url}#/%{filename_effective}' | sed "s#/tmp//##")
     ST_CORE_SUBMODULE_SRC+="Source10$i: $SourceUrl\n"
     i+=1
   done
