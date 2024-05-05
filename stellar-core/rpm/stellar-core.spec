@@ -2,12 +2,8 @@
 %global toolchain clang
 %define system_name stellar
 
-%if 0%{?fc38}%{?fc39}
-# initializes global with_enabled_system_rust to 1
-%bcond_without enabled_system_rust
-%else
+# initializes global with_enabled_system_rust to 0
 %bcond_with enabled_system_rust
-%endif
 
 Name: stellar-core
 Version: 20.4.0
