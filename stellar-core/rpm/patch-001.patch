@@ -138,6 +138,8 @@ diff --git a/src/Makefile.am b/src/Makefile.am
  	printf '%s\n' "$$state" > $@.tmp; \
  	if cmp -s $@.tmp $@; then rm -f $@.tmp; else mv -f $@.tmp $@; fi
  
+@@ -417,0 +416 @@
++		GIT_REVISION=$$(cat $(SOROBAN_BUILD_DIR)/$$proto/target/git-state.txt) \
 diff --git a/src/rust/src/dep-trees/p21-expect.txt b/src/rust/src/dep-trees/p21-expect.txt
 --- a/src/rust/src/dep-trees/p21-expect.txt
 +++ b/src/rust/src/dep-trees/p21-expect.txt
