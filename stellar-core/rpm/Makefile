@@ -23,7 +23,8 @@ srpm: | $(PROJECTTMPDIR)
 	rpkg srpm --spec $(PROJECTNAME).spec --outdir $(PROJECTTMPDIR)
 
 rpmbuild: srpm
-	rpmbuild --nocheck --rebuild $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
+	command -v ccache >/dev/null
+	rpmbuild --define '_with_compiler_cache 1' --nocheck --rebuild $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
 
 fc44: srpm
 	mock --enable-network --no-clean -r fedora-44-x86_64 --resultdir=rpm-results $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
