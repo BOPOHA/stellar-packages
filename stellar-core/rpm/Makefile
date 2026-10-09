@@ -1,6 +1,6 @@
 # required packages:
 # dnf install mock rpmdevtools rpkg
-.PHONY: clean submodules spec srpm rpmbuild fc44
+.PHONY: clean submodules spec srpm rpmbuild rpmbuild-tests fc44 fc44-tests
 
 PROJECTNAME=stellar-core
 PROJECTTMPDIR=/tmp/$(PROJECTNAME)
@@ -27,5 +27,13 @@ rpmbuild: srpm
 	command -v sccache >/dev/null
 	rpmbuild --define '_with_compiler_cache 1' --nocheck --rebuild $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
 
+rpmbuild-tests: srpm
+	command -v ccache >/dev/null
+	command -v sccache >/dev/null
+	rpmbuild --with tests --define '_with_compiler_cache 1' --rebuild $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
+
 fc44: srpm
 	mock --enable-network --no-clean -r fedora-44-x86_64 --resultdir=rpm-results $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
+
+fc44-tests: srpm
+	mock --enable-network --no-clean --with tests -r fedora-44-x86_64 --resultdir=rpm-results $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm

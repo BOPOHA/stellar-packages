@@ -1,6 +1,17 @@
 %global debug_package %{nil}
 %global toolchain clang
+%global _lto_cflags %{nil}
 %define system_name stellar
+
+# Building Stellar Core's test suite adds roughly one third more C++ sources
+# and enables Rust test utilities. Keep release builds lean; use --with tests
+# for a dedicated validation build.
+%bcond_with tests
+
+# Full Rust LTO is extremely expensive because Stellar Core builds a separate
+# Soroban host for every supported protocol. ThinLTO preserves cross-crate
+# optimization while keeping clean COPR builds below the worker timeout.
+%bcond_with full_rust_lto
 
 # Use the distribution toolchain by default. The bundled installer remains
 # available with --without enabled_system_rust for pinned-toolchain builds.
@@ -11,7 +22,7 @@
 
 Name: stellar-core
 Version: 29.0.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
 License: Apache 2.0
@@ -41,7 +52,10 @@ Source118: https://api.github.com/repos/gperftools/gperftools/tarball/6ed73507dd
 # END: submodule sources
 BuildRequires: clang >= 20
 BuildRequires: postgresql-devel >= 13
+%if %{with tests}
 BuildRequires: postgresql-server >= 13
+BuildRequires: tzdata
+%endif
 
 Requires: user(stellar)
 Requires: group(stellar)
@@ -60,7 +74,9 @@ BuildRequires: git
 BuildRequires: hostname
 BuildRequires: libtool
 BuildRequires: libunwind-devel
+%if %{with tests}
 BuildRequires: parallel
+%endif
 BuildRequires: pkgconfig
 BuildRequires: systemd-rpm-macros
 
@@ -124,6 +140,17 @@ source "$HOME/.cargo/env"
 %endif
 
 %set_build_flags
+# This package intentionally does not produce debuginfo subpackages. Avoid
+# spending time and disk space generating DWARF that RPM will discard.
+export CFLAGS="$CFLAGS -g0"
+export CXXFLAGS="$CXXFLAGS -g0"
+export RUSTFLAGS="$RUSTFLAGS -Cdebuginfo=0"
+export CARGO_PROFILE_RELEASE_DEBUG=0
+%if %{without full_rust_lto}
+export RUSTFLAGS="$RUSTFLAGS -Ccodegen-units=16"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
+export CARGO_PROFILE_RELEASE_LTO=thin
+%endif
 %if 0%{?_with_compiler_cache}
 # This is enabled only by the local `make rpmbuild` target. Keep Mock builds
 # unchanged while allowing fresh rpmbuild trees to reuse C/C++ and Rust
@@ -133,7 +160,11 @@ export CXX="ccache $CXX"
 export RUSTC_WRAPPER=sccache
 %endif
 NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
+%if %{with tests}
 %configure
+%else
+%configure --disable-tests
+%endif
 %make_build %{?cargo_override}
 
 %install
@@ -148,7 +179,14 @@ NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 %{__install} -d %{buildroot}%{_sysconfdir}/stellar
 
 %check
-make check %{?cargo_override}
+%if %{with tests}
+# The release archive is not a Git checkout, so check-nondet and
+# check-nocstyle cannot run in an SRPM build.  The backtrace test requires
+# function-name symbolization that is not reliable with distro LTO flags.
+# Keep the PostgreSQL functional suite (including check-sorobans).
+INTERACTIVE=0 TEST_SPEC='~[acceptance]~[.]~[backtrace]' \
+    make check TESTS=test/selftest-pg %{?cargo_override}
+%endif
 
 %post
 %systemd_post %{name}.service
@@ -173,6 +211,8 @@ make check %{?cargo_override}
 %changelog
 * Fri Oct 09 2026 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v29.0.0; require C++20 and Rust 1.95 toolchains
+- streamline production builds by excluding tests and discarded debug data
+- use Rust ThinLTO and disable C++ LTO to fit clean builds within COPR limits
 
 * Sat Mar 02 2024 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v20.3.0
