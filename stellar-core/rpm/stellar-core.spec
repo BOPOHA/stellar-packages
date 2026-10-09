@@ -126,9 +126,11 @@ source "$HOME/.cargo/env"
 %set_build_flags
 %if 0%{?_with_compiler_cache}
 # This is enabled only by the local `make rpmbuild` target. Keep Mock builds
-# unchanged while allowing fresh rpmbuild trees to reuse C/C++ compilation.
+# unchanged while allowing fresh rpmbuild trees to reuse C/C++ and Rust
+# compilation.
 export CC="ccache $CC"
 export CXX="ccache $CXX"
+export RUSTC_WRAPPER=sccache
 %endif
 NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 %configure

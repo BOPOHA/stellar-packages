@@ -24,6 +24,7 @@ srpm: | $(PROJECTTMPDIR)
 
 rpmbuild: srpm
 	command -v ccache >/dev/null
+	command -v sccache >/dev/null
 	rpmbuild --define '_with_compiler_cache 1' --nocheck --rebuild $(PROJECTTMPDIR)/$(PROJECTNAME)-*.src.rpm
 
 fc44: srpm
