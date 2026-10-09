@@ -1,7 +1,7 @@
 # required packages:
 # dnf install mock rpmdevtools rpkg
 .PHONY: clean submodules spec rust-spec sources srpm rust-srpm \
-	rpmbuild rpmbuild-rust rpmbuild-tests fc44 fc44-rust fc44-tests
+	rpmbuild rpmbuild-rust rpmbuild-tests fc44 fc44-core fc44-rust fc44-tests
 
 PROJECTNAME=stellar-core
 RUSTPROJECTNAME=stellar-core-rust
@@ -58,6 +58,11 @@ fc44: rust-srpm srpm
 	mock --enable-network -r fedora-44-x86_64 --chain \
 		--localrepo=$(CHAINREPO) \
 		$(PROJECTTMPDIR)/$(RUSTPROJECTNAME).src.rpm \
+		$(PROJECTTMPDIR)/$(PROJECTNAME).src.rpm
+
+fc44-core: srpm
+	mock --enable-network -r fedora-44-x86_64 --chain \
+		--localrepo=$(CHAINREPO) \
 		$(PROJECTTMPDIR)/$(PROJECTNAME).src.rpm
 
 fc44-rust: rust-srpm

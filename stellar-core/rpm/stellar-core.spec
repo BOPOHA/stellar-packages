@@ -148,9 +148,6 @@ tar -zxf %{SOURCE118} --strip-components 1 -C lib/gperftools/
 
 %{__install} -d $HOME/.cargo
 %{__install} -pm 0644 %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
-%else
-%{__install} -pm 0644 %{_datadir}/stellar-core-rust/%{version}/RustBridge.h src/rust/RustBridge.h
-%{__install} -pm 0644 %{_datadir}/stellar-core-rust/%{version}/RustBridge.cpp src/rust/RustBridge.cpp
 %endif
 
 %build
@@ -186,6 +183,12 @@ NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 %configure \
     --disable-tests \
     --with-prebuilt-rust=%{_libdir}/stellar-core-rust/%{version}/librust_stellar_core.a
+%endif
+%if %{without tests}
+# autogen.sh runs make-mks, which must not discover RustBridge.cpp in the
+# source tree: Makefile.am already lists that generated source explicitly.
+%{__install} -pm 0644 %{_datadir}/stellar-core-rust/%{version}/RustBridge.h src/rust/RustBridge.h
+%{__install} -pm 0644 %{_datadir}/stellar-core-rust/%{version}/RustBridge.cpp src/rust/RustBridge.cpp
 %endif
 %make_build %{?cargo_override}
 
