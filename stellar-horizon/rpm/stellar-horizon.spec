@@ -1,19 +1,19 @@
 %global debug_package %{nil}
 
 Name: stellar-horizon
-Version: 2.26.1
+Version: 29.0.0
 Release: 1%{?dist}
 Summary: Client-facing API server for the Stellar network
 
 License: Apache 2.0
 Source0: {{{ git_dir_pack }}}
-Source1: https://github.com/stellar/go/archive/refs/tags/horizon-v%{version}.tar.gz
+Source1: https://github.com/stellar/stellar-horizon/archive/refs/tags/v%{version}.tar.gz#/stellar-horizon-v%{version}.tar.gz
 
 Requires: user(stellar)
 Requires: group(stellar)
 
 BuildRequires: git >= 2.0
-BuildRequires: golang >= 1.18
+BuildRequires: golang >= 1.25
 BuildRequires: systemd-rpm-macros
 %if 0%{?rhel} && 0%{?rhel} == 7
 BuildRequires: rh-postgresql13-postgresql-server
@@ -30,16 +30,13 @@ check the status of accounts, subscribe to event streams and more.
 
 %prep
 {{{ git_dir_setup_macro }}}
-%setup -q -b 1 -T -D -n go-horizon-v%{version}
+%setup -q -b 1 -T -D -n %{name}-%{version}
 
 %build
-# the onliner bellow do the same as the next two rows
-# go build --mod mod -ldflags="-s -w" -o %{name} services/horizon/*.go
-# but we want to be sure that the tests use the same source code
-# linkmode=external related to he rpm>=4.14.0 and build-id
-# one way is to use gccgo instead of go build, and the other way is to add -ldflags=-linkmode=external flag to go build.
+# Build the versioned standalone Horizon repository. The external linker keeps
+# the RPM build-id behavior used by the previous package.
 go mod vendor
-go build --mod vendor -ldflags="-s -w -linkmode=external" -o %{name} services/horizon/*.go
+go build --mod vendor -trimpath -ldflags="-s -w -linkmode=external -X github.com/stellar/go-stellar-sdk/support/app.version=%{version}-%{release}" -o %{name} .
 
 %install
 %{__install} -Dpm 0755 %{name} %{buildroot}%{_bindir}/%{name}
@@ -50,13 +47,14 @@ go build --mod vendor -ldflags="-s -w -linkmode=external" -o %{name} services/ho
 %if 0%{?rhel} && 0%{?rhel} == 7
     source /opt/rh/rh-postgresql13/enable
 %endif
-# make clean db in tmp dir, and run go test.
+# Run Horizon's unit suite against an isolated PostgreSQL instance. Integration
+# tests are skipped unless explicitly enabled by their upstream environment flag.
 export PGDATA=`mktemp -d`
 initdb --no-locale -E UTF8 -U postgres
 echo -e "logging_collector=off\nlog_min_messages=INFO\nunix_socket_directories='$PGDATA'\n" >> $PGDATA/postgresql.conf
 pg_ctl -l $PGDATA/log.txt start
 sleep 1
-go test -count=1 ./services/horizon/...
+go test -count=1 ./...
 pg_ctl stop
 
 %post
@@ -71,6 +69,9 @@ pg_ctl stop
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %changelog
+* Fri Oct 09 2026 Anatolii Vorona <vorona.tolik@gmail.com>
+- update to v29.0.0 from the standalone Horizon repository
+
 * Tue Sep 19 2023 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v2.26.1
 
