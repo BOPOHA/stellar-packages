@@ -1,0 +1,109 @@
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -507,6 +507,23 @@ AC_ARG_ENABLE(tests,
+         [Disable building test suite]))
+ AM_CONDITIONAL(BUILD_TESTS, [test x$enable_tests != xno])
+ 
++AC_ARG_WITH([prebuilt-rust],
++    AS_HELP_STRING([--with-prebuilt-rust=PATH],
++        [Link a prebuilt librust_stellar_core.a and skip Cargo builds]),
++    [PREBUILT_RUST="$withval"],
++    [PREBUILT_RUST=""])
++AS_IF([test "x$PREBUILT_RUST" = "xyes"], [
++    AC_MSG_ERROR([--with-prebuilt-rust requires an archive path])
++])
++AS_IF([test "x$PREBUILT_RUST" = "xno"], [
++    PREBUILT_RUST=""
++])
++AS_IF([test -n "$PREBUILT_RUST" && test ! -f "$PREBUILT_RUST"], [
++    AC_MSG_ERROR([prebuilt Rust archive not found: $PREBUILT_RUST])
++])
++AC_SUBST(PREBUILT_RUST)
++AM_CONDITIONAL(USE_PREBUILT_RUST, [test -n "$PREBUILT_RUST"])
++
+ AC_ARG_ENABLE(thread-jitter,
+     AS_HELP_STRING([--enable-thread-jitter],
+         [Enable thread jitter injection for finding concurrency bugs]))
+@@ -589,5 +606,6 @@ AM_CONDITIONAL(ENABLE_NEXT_PROTOCOL_VERSION_UNSAFE_FOR_PRODUCTION,
+     [test x$enable_next_protocol_version_unsafe_for_production = xyes])
+ 
++AS_IF([test -z "$PREBUILT_RUST"], [
+ AC_PATH_PROG(CARGO, cargo)
+ if test x"$CARGO" = x; then
+   AC_MSG_ERROR([cannot find cargo, needed for rust code])
+@@ -610,6 +628,7 @@ AX_COMPARE_VERSION([${RUSTC_VERSION}],[ge],[1.57],[],[
+ ])
+ AC_ARG_VAR(RUSTC)
+ AC_ARG_VAR([RUSTC_WRAPPER], [rustc wrapper executable (for example, sccache)])
++])
+ 
+ # Need this to pass through ccache/sccache for xdrpp, libsodium
+ esc() {
+diff --git a/src/Makefile.am b/src/Makefile.am
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -268,6 +268,10 @@ ALL_SOROBAN_EXTERN_ARGS=$(foreach proto,$(ALL_SOROBAN_PROTOCOLS),$(call soroban_
+ ALL_SOROBAN_DEPEND_ARGS=$(foreach proto,$(ALL_SOROBAN_PROTOCOLS),$(call soroban_depend_flag,$(proto)))
+ SOROBAN_LIBS_STATE=$(shell cat $(SOROBAN_LIBS_STAMP) 2>/dev/null || echo no-soroban-libs)
+ 
++if USE_PREBUILT_RUST
++LIBRUST_STELLAR_CORE=@PREBUILT_RUST@
++else # !USE_PREBUILT_RUST
++
+ $(RUST_CXXBRIDGE): Makefile $(RUST_TOOLCHAIN_FILE)
+ 	mkdir -p $(RUST_BIN_DIR)
+ 	RUSTC_WRAPPER="$(RUSTC_WRAPPER)" CARGO_HTTP_MULTIPLEXING=false $(CARGO) install --force --locked --root $(RUST_BUILD_DIR) cxxbridge-cmd --version 1.0.68
+@@ -469,6 +473,8 @@ $(LIBRUST_STELLAR_CORE): $(RUST_HOST_DEPFILES) $(SRC_RUST_FILES) $(ALL_SOROBAN_L
+ 
+ endif # ENABLE_FASTDEV_UNSAFE_FOR_PRODUCTION
+ 
++endif # !USE_PREBUILT_RUST
++
+ stellar_core_LDADD += $(LIBRUST_STELLAR_CORE) -ldl
+ 
+ $(srcdir)/src.mk: $(top_srcdir)/make-mks
+diff --git a/lib/gperftools/configure.ac b/lib/gperftools/configure.ac
+--- a/lib/gperftools/configure.ac
++++ b/lib/gperftools/configure.ac
+@@ -82,5 +82,11 @@ AC_ARG_ENABLE([minimal],
+               [],
+               [enable_minimal="$default_enable_minimal"])
++AC_ARG_ENABLE([tests],
++              [AS_HELP_STRING([--disable-tests],
++                              [do not build unit-test executables])],
++              [],
++              [enable_tests=yes])
++AM_CONDITIONAL([BUILD_TESTS], [test "x$enable_tests" != "xno"])
+ if test "$enable_minimal" = yes; then
+   enable_cpu_profiler=no
+   enable_heap_profiler=no
+diff --git a/lib/gperftools/Makefile.am b/lib/gperftools/Makefile.am
+--- a/lib/gperftools/Makefile.am
++++ b/lib/gperftools/Makefile.am
+@@ -523,6 +523,7 @@
+ 
+ endif WITH_DEBUGALLOC
+ 
++if BUILD_TESTS
+ noinst_LTLIBRARIES += librun_benchmark.la
+ librun_benchmark_la_SOURCES = \
+ 	benchmark/run_benchmark.cc
+@@ -567,6 +568,7 @@
+ 
+ endif WITH_HEAP_PROFILER_OR_CHECKER
+ endif !MINGW
++endif BUILD_TESTS
+ 
+ ### ------- tcmalloc (thread-caching malloc + heap profiler)
+ 
+@@ -828,7 +830,9 @@
+ # This should always include $(TESTS), but may also include other
+ # binaries that you compile but don't want automatically installed.
+ # We'll add to this later, on a library-by-library basis
++if BUILD_TESTS
+ noinst_PROGRAMS += $(TESTS)
++endif BUILD_TESTS
+ 
+ # http://linux.die.net/man/1/pkg-config, http://pkg-config.freedesktop.org/wiki
+ pkgconfigdir = $(libdir)/pkgconfig

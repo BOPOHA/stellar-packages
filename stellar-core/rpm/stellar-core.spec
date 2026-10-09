@@ -13,6 +13,10 @@
 # optimization while keeping clean COPR builds below the worker timeout.
 %bcond_with full_rust_lto
 
+# Prefer the distribution ABI and avoid rebuilding bundled libsodium. Chroots
+# without libsodium-devel can explicitly select the bundled fallback.
+%bcond_without system_libsodium
+
 # Use the distribution toolchain by default. The bundled installer remains
 # available with --without enabled_system_rust for pinned-toolchain builds.
 %bcond_without enabled_system_rust
@@ -22,13 +26,15 @@
 
 Name: stellar-core
 Version: 29.0.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
-License: Apache 2.0
+License: Apache-2.0
+URL: https://github.com/stellar/stellar-core
 Source0: {{{ git_dir_pack }}}
 Source1: https://github.com/stellar/stellar-core/archive/refs/tags/v%{version}.tar.gz#/stellar-core-v%{version}.tar.gz
 Patch0: patch-001.patch
+Patch1: patch-002-prebuilt-rust.patch
 # START: submodule sources
 Source100: https://api.github.com/repos/stellar/libsodium/tarball/71d227cf8e4644393a3322f36050f7afdfddc498#/stellar-libsodium-71d227c.tar.gz
 Source101: https://api.github.com/repos/xdrpp/xdrpp/tarball/a29a1703699ad2b6cb4b28538d6ed4173eacdb60#/xdrpp-xdrpp-a29a170.tar.gz
@@ -52,9 +58,14 @@ Source118: https://api.github.com/repos/gperftools/gperftools/tarball/6ed73507dd
 # END: submodule sources
 BuildRequires: clang >= 20
 BuildRequires: postgresql-devel >= 13
+%if %{with system_libsodium}
+BuildRequires: libsodium-devel >= 1.0.17
+%endif
 %if %{with tests}
 BuildRequires: postgresql-server >= 13
 BuildRequires: tzdata
+%else
+BuildRequires: stellar-core-rust-static = %{version}-%{release}
 %endif
 
 Requires: user(stellar)
@@ -62,12 +73,14 @@ Requires: group(stellar)
 
 BuildRequires: automake
 BuildRequires: bison
+%if %{with tests}
 %if %{with enabled_system_rust}
 BuildRequires: cargo >= 1.95
 BuildRequires: rust >= 1.95
 %else
 BuildRequires: curl
 BuildRequires: perl
+%endif
 %endif
 BuildRequires: flex
 BuildRequires: git
@@ -83,10 +96,11 @@ BuildRequires: systemd-rpm-macros
 Provides: %{name} = %{version}
 
 %description
-Stellar is a decentralized, federated peer-to-peer network that allows people to send payments in any asset
-anywhere in the world instantaneously, and with minimal fee. Stellar-core is the core component of this network.
-Stellar-core is a C++ implementation of the Stellar Consensus Protocol configured to construct a chain of ledgers
-that are guaranteed to be in agreement across all the participating nodes at all times.
+Stellar is a decentralized, federated peer-to-peer network that allows people
+to send payments in any asset anywhere in the world instantaneously and with a
+minimal fee. Stellar Core is its C++ implementation of the Stellar Consensus
+Protocol, configured to construct a chain of ledgers that agree across all
+participating nodes.
 
 %prep
 {{{ git_dir_setup_macro }}}
@@ -125,13 +139,19 @@ tar -zxf %{SOURCE118} --strip-components 1 -C lib/gperftools/
 # END: submodules setup
 
 %patch -P 0 -p1
+%patch -P 1 -p1
 
+%if %{with tests}
 %if %{without enabled_system_rust}
 ./install-rust.sh
 %endif
 
 %{__install} -d $HOME/.cargo
 %{__install} -pm 0644 %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
+%else
+%{__install} -pm 0644 %{_datadir}/stellar-core-rust/%{version}/RustBridge.h src/rust/RustBridge.h
+%{__install} -pm 0644 %{_datadir}/stellar-core-rust/%{version}/RustBridge.cpp src/rust/RustBridge.cpp
+%endif
 
 %build
 
@@ -163,7 +183,9 @@ NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 %if %{with tests}
 %configure
 %else
-%configure --disable-tests
+%configure \
+    --disable-tests \
+    --with-prebuilt-rust=%{_libdir}/stellar-core-rust/%{version}/librust_stellar_core.a
 %endif
 %make_build %{?cargo_override}
 
@@ -209,10 +231,12 @@ INTERACTIVE=0 TEST_SPEC='~[acceptance]~[.]~[backtrace]' \
 %dir %attr(0755, stellar, stellar) /var/lib/stellar/core
 
 %changelog
-* Fri Oct 09 2026 Anatolii Vorona <vorona.tolik@gmail.com>
+* Fri Oct 09 2026 Anatolii Vorona <vorona.tolik@gmail.com> - 29.0.0-3
 - update v29.0.0; require C++20 and Rust 1.95 toolchains
 - streamline production builds by excluding tests and discarded debug data
 - use Rust ThinLTO and disable C++ LTO to fit clean builds within COPR limits
+- consume the separately built Rust static library in production builds
+- use system libsodium and omit vendored gperftools test executables
 
 * Sat Mar 02 2024 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v20.3.0
