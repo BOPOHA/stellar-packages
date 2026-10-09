@@ -2,43 +2,46 @@
 %global toolchain clang
 %define system_name stellar
 
-%if 0%{?fc38}%{?fc39}
-# initializes global with_enabled_system_rust to 1
+# Use the distribution toolchain by default. The bundled installer remains
+# available with --without enabled_system_rust for pinned-toolchain builds.
 %bcond_without enabled_system_rust
-%else
-%bcond_with enabled_system_rust
+%if %{with enabled_system_rust}
+%global cargo_override CARGO=cargo
 %endif
 
 Name: stellar-core
-Version: 20.3.0
+Version: 29.0.0
 Release: 1%{?dist}
 Summary: Stellar is a decentralized, federated peer-to-peer network
 
 License: Apache 2.0
 Source0: {{{ git_dir_pack }}}
 Source1: https://github.com/stellar/stellar-core/archive/refs/tags/v%{version}.tar.gz#/stellar-core-v%{version}.tar.gz
+Patch0: patch-001.patch
 # START: submodule sources
-Source100: https://api.github.com/repos/chriskohlhoff/asio/tarball/c465349fa5cd91a64bb369f5131ceacab2c0c1c3#/chriskohlhoff-asio-asio-1-28-0-0-gc465349.tar.gz
-Source101: https://api.github.com/repos/USCiLab/cereal/tarball/ebef1e929807629befafbb2918ea1a08c7194554#/USCiLab-cereal-v1.3.2-0-gebef1e9.tar.gz
-Source102: https://api.github.com/repos/fmtlib/fmt/tarball/f5e54359df4c26b6230fc61d38aa294581393084#/fmtlib-fmt-10.1.1-0-gf5e5435.tar.gz
-Source103: https://api.github.com/repos/stellar/medida/tarball/f91354b0055de939779d392999975d611b1b1ad5#/stellar-medida-f91354b.tar.gz
-Source104: https://api.github.com/repos/stellar/libsodium/tarball/71d227cf8e4644393a3322f36050f7afdfddc498#/stellar-libsodium-vs2022-0-g71d227c.tar.gz
-Source105: https://api.github.com/repos/gabime/spdlog/tarball/7e635fca68d014934b4af8a1cf874f63989352b7#/gabime-spdlog-v1.12.0-0-g7e635fc.tar.gz
-Source106: https://api.github.com/repos/stellar/tracy/tarball/897aec5b062664d2485f4f9a213715d2e527e0ca#/stellar-tracy-v0.6.3-3431-g897aec5.tar.gz
-Source107: https://api.github.com/repos/xdrpp/xdrpp/tarball/9fd7ca222bb26337e1443c67b18fbc5019962884#/xdrpp-xdrpp-9fd7ca2.tar.gz
-Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/b96148cd4acc372cc9af17b909ffe4b12c43ecb6#/stellar-stellar-xdr-v20.1-0-gb96148c.tar.gz
-Source109: https://api.github.com/repos/stellar/stellar-xdr/tarball/6a71b137bc49f901bed53c8c215c26213017026c#/stellar-stellar-xdr-6a71b13.tar.gz
-
+Source100: https://api.github.com/repos/stellar/libsodium/tarball/71d227cf8e4644393a3322f36050f7afdfddc498#/stellar-libsodium-71d227c.tar.gz
+Source101: https://api.github.com/repos/xdrpp/xdrpp/tarball/a29a1703699ad2b6cb4b28538d6ed4173eacdb60#/xdrpp-xdrpp-a29a170.tar.gz
+Source102: https://api.github.com/repos/stellar/medida/tarball/2bf1afac2911c9aca9d1ba06e3d883fa150c9baf#/stellar-medida-2bf1afa.tar.gz
+Source103: https://api.github.com/repos/USCiLab/cereal/tarball/ebef1e929807629befafbb2918ea1a08c7194554#/USCiLab-cereal-ebef1e9.tar.gz
+Source104: https://api.github.com/repos/chriskohlhoff/asio/tarball/c465349fa5cd91a64bb369f5131ceacab2c0c1c3#/chriskohlhoff-asio-c465349.tar.gz
+Source105: https://api.github.com/repos/fmtlib/fmt/tarball/407c905e45ad75fc29bf0f9bb7c5c2fd3475976f#/fmtlib-fmt-407c905.tar.gz
+Source106: https://api.github.com/repos/stellar/tracy/tarball/29d05d1a33115bc451cad068225c96aa5ad7051d#/stellar-tracy-29d05d1.tar.gz
+Source107: https://api.github.com/repos/gabime/spdlog/tarball/79524ddd08a4ec981b7fea76afd08ee05f83755d#/gabime-spdlog-79524dd.tar.gz
+Source108: https://api.github.com/repos/stellar/stellar-xdr/tarball/9c9c145953e80990d6ff1ae3a6a973a0ce6d0694#/stellar-stellar-xdr-9c9c145.tar.gz
+Source109: https://api.github.com/repos/stellar/rs-soroban-env/tarball/7eeddd897cfb0f700f938b0c8d6f0541150d1fcb#/stellar-rs-soroban-env-7eeddd8.tar.gz
+Source110: https://api.github.com/repos/stellar/rs-soroban-env/tarball/1cd8b8dca9aeeca9ce45b129cd923992b32dc258#/stellar-rs-soroban-env-1cd8b8d.tar.gz
+Source111: https://api.github.com/repos/stellar/rs-soroban-env/tarball/688bc34e6cd15c71742139e625268c7f30f55a92#/stellar-rs-soroban-env-688bc34.tar.gz
+Source112: https://api.github.com/repos/stellar/rs-soroban-env/tarball/a37eeda815e626f416eff13f2eacb32a8b0c3729#/stellar-rs-soroban-env-a37eeda.tar.gz
+Source113: https://api.github.com/repos/stellar/rs-soroban-env/tarball/6323c1fc03ecb9f53b7c1e42fd62c1bbd3aebc2c#/stellar-rs-soroban-env-6323c1f.tar.gz
+Source114: https://api.github.com/repos/stellar/rs-soroban-env/tarball/b351f88a468d3b9e1d6de53d5b0ca585f6b7dadb#/stellar-rs-soroban-env-b351f88.tar.gz
+Source115: https://api.github.com/repos/stellar/rs-soroban-env/tarball/b03d2563f3a08d51095a19bdbb6d90364b8ce04a#/stellar-rs-soroban-env-b03d256.tar.gz
+Source116: https://api.github.com/repos/stellar/rs-soroban-env/tarball/ba37ea5f76a10710835992fb90f9ec7a14eca499#/stellar-rs-soroban-env-ba37ea5.tar.gz
+Source117: https://api.github.com/repos/stellar/rs-soroban-env/tarball/a721944b5a4ea830a4bf5c2dbb8dbe8c1e1354c5#/stellar-rs-soroban-env-a721944.tar.gz
+Source118: https://api.github.com/repos/gperftools/gperftools/tarball/6ed73507dd3970a123e267a50b3ee73392e3b053#/gperftools-gperftools-6ed7350.tar.gz
 # END: submodule sources
-%if 0%{?el7}
-BuildRequires: llvm-toolset-14.0-clang
-BuildRequires: devtoolset-12-toolchain
-BuildRequires: rh-postgresql13-postgresql-devel, rh-postgresql13-postgresql-server
-%else
-BuildRequires: clang >= 12
+BuildRequires: clang >= 20
 BuildRequires: postgresql-devel >= 13
 BuildRequires: postgresql-server >= 13
-%endif
 
 Requires: user(stellar)
 Requires: group(stellar)
@@ -46,7 +49,11 @@ Requires: group(stellar)
 BuildRequires: automake
 BuildRequires: bison
 %if %{with enabled_system_rust}
-BuildRequires: cargo
+BuildRequires: cargo >= 1.95
+BuildRequires: rust >= 1.95
+%else
+BuildRequires: curl
+BuildRequires: perl
 %endif
 BuildRequires: flex
 BuildRequires: git
@@ -54,6 +61,7 @@ BuildRequires: hostname
 BuildRequires: libtool
 BuildRequires: libunwind-devel
 BuildRequires: parallel
+BuildRequires: pkgconfig
 BuildRequires: systemd-rpm-macros
 
 Provides: %{name} = %{version}
@@ -70,24 +78,44 @@ that are guaranteed to be in agreement across all the participating nodes at all
 sed -i "s|\x25\x25VERSION\x25\x25|%{version}-%{release}|" src/main/StellarCoreVersion.cpp.in
 
 # START: submodules setup
-tar -zxf  %{SOURCE100} --strip-components 1 -C lib/asio/
-tar -zxf  %{SOURCE101} --strip-components 1 -C lib/cereal/
-tar -zxf  %{SOURCE102} --strip-components 1 -C lib/fmt/
-tar -zxf  %{SOURCE103} --strip-components 1 -C lib/libmedida/
-tar -zxf  %{SOURCE104} --strip-components 1 -C lib/libsodium/
-tar -zxf  %{SOURCE105} --strip-components 1 -C lib/spdlog/
-tar -zxf  %{SOURCE106} --strip-components 1 -C lib/tracy/
-tar -zxf  %{SOURCE107} --strip-components 1 -C lib/xdrpp/
-tar -zxf  %{SOURCE108} --strip-components 1 -C src/protocol-curr/xdr/
-tar -zxf  %{SOURCE109} --strip-components 1 -C src/protocol-next/xdr/
-
+tar -zxf %{SOURCE100} --strip-components 1 -C lib/libsodium/
+tar -zxf %{SOURCE101} --strip-components 1 -C lib/xdrpp/
+tar -zxf %{SOURCE102} --strip-components 1 -C lib/libmedida/
+tar -zxf %{SOURCE103} --strip-components 1 -C lib/cereal/
+tar -zxf %{SOURCE104} --strip-components 1 -C lib/asio/
+tar -zxf %{SOURCE105} --strip-components 1 -C lib/fmt/
+tar -zxf %{SOURCE106} --strip-components 1 -C lib/tracy/
+tar -zxf %{SOURCE107} --strip-components 1 -C lib/spdlog/
+tar -zxf %{SOURCE108} --strip-components 1 -C src/protocol-curr/xdr/
+tar -zxf %{SOURCE109} --strip-components 1 -C src/rust/soroban/p21/
+echo '7eeddd897cfb0f700f938b0c8d6f0541150d1fcb' > src/rust/soroban/p21/.git-revision
+tar -zxf %{SOURCE110} --strip-components 1 -C src/rust/soroban/p22/
+echo '1cd8b8dca9aeeca9ce45b129cd923992b32dc258' > src/rust/soroban/p22/.git-revision
+tar -zxf %{SOURCE111} --strip-components 1 -C src/rust/soroban/p23/
+echo '688bc34e6cd15c71742139e625268c7f30f55a92' > src/rust/soroban/p23/.git-revision
+tar -zxf %{SOURCE112} --strip-components 1 -C src/rust/soroban/p24/
+echo 'a37eeda815e626f416eff13f2eacb32a8b0c3729' > src/rust/soroban/p24/.git-revision
+tar -zxf %{SOURCE113} --strip-components 1 -C src/rust/soroban/p25/
+echo '6323c1fc03ecb9f53b7c1e42fd62c1bbd3aebc2c' > src/rust/soroban/p25/.git-revision
+tar -zxf %{SOURCE114} --strip-components 1 -C src/rust/soroban/p26/
+echo 'b351f88a468d3b9e1d6de53d5b0ca585f6b7dadb' > src/rust/soroban/p26/.git-revision
+tar -zxf %{SOURCE115} --strip-components 1 -C src/rust/soroban/p27/
+echo 'b03d2563f3a08d51095a19bdbb6d90364b8ce04a' > src/rust/soroban/p27/.git-revision
+tar -zxf %{SOURCE116} --strip-components 1 -C src/rust/soroban/p28/
+echo 'ba37ea5f76a10710835992fb90f9ec7a14eca499' > src/rust/soroban/p28/.git-revision
+tar -zxf %{SOURCE117} --strip-components 1 -C src/rust/soroban/p29/
+echo 'a721944b5a4ea830a4bf5c2dbb8dbe8c1e1354c5' > src/rust/soroban/p29/.git-revision
+tar -zxf %{SOURCE118} --strip-components 1 -C lib/gperftools/
 # END: submodules setup
+
+%patch -P 0 -p1
 
 %if %{without enabled_system_rust}
 ./install-rust.sh
 %endif
 
-cp %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
+%{__install} -d $HOME/.cargo
+%{__install} -pm 0644 %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
 
 %build
 
@@ -95,22 +123,13 @@ cp %{_builddir}/{{{ git_dir_name }}}/cargo-config.toml $HOME/.cargo/config.toml
 source "$HOME/.cargo/env"
 %endif
 
-%if 0%{?el7}
-    LDFLAGS=-Wl,-rpath,%{_datadir}/%{system_name}/lib/
-    source /opt/rh/rh-postgresql13/enable
-    source /opt/rh/devtoolset-12/enable
-    source /opt/rh/llvm-toolset-14.0/enable
-    export RUSTC_LINKER=/opt/rh/llvm-toolset-14.0/root/usr/bin/clang
-    export CARGO_UNSTABLE_HOST_CONFIG="true"
-    export CARGO_HOST_LINKER="clang"
-%endif
 %set_build_flags
 NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 %configure
-%make_build
+%make_build %{?cargo_override}
 
 %install
-%make_install
+%make_install %{?cargo_override}
 %{__install} -Dpm 0644 %{_builddir}/{{{ git_dir_name }}}/%{name}.logrotate %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 %{__install} -Dpm 0644 %{_builddir}/{{{ git_dir_name }}}/%{name}.service   %{buildroot}%{_unitdir}/%{name}.service
 %{__install} -Dpm 0644 %{_builddir}/{{{ git_dir_name }}}/%{name}@.service  %{buildroot}%{_unitdir}/%{name}@.service
@@ -120,20 +139,8 @@ NOGIT=legal-hack-to-work-with-local-files ./autogen.sh --skip-submodules yeah
 %{__install} -d %{buildroot}/var/lib/stellar/core
 %{__install} -d %{buildroot}%{_sysconfdir}/stellar
 
-%if 0%{?el7}
-    %{__install} -D /opt/rh/rh-postgresql13/root/usr/lib64/libpq.so.rh-postgresql13-5 %{buildroot}%{_datadir}/%{system_name}/lib/libpq.so.rh-postgresql13-5
-%endif
-
 %check
-%if 0%{?el7}
-# ./xdrc/xdrc -hh -o tests/xdrtest.hh tests/xdrtest.x
-# g++: error: unrecognized command line option '-std=c++17'
-source /opt/rh/rh-postgresql13/enable
-source /opt/rh/devtoolset-12/enable
-source /opt/rh/llvm-toolset-14.0/enable
-%endif
-
-make check
+make check %{?cargo_override}
 
 %post
 %systemd_post %{name}.service
@@ -154,11 +161,11 @@ make check
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %dir %attr(0755, stellar, stellar) /var/log/stellar
 %dir %attr(0755, stellar, stellar) /var/lib/stellar/core
-%if 0%{?el7}
-    %{_datadir}/%{system_name}/lib/libpq.so.rh-postgresql13-5
-%endif
 
 %changelog
+* Fri Oct 09 2026 Anatolii Vorona <vorona.tolik@gmail.com>
+- update v29.0.0; require C++20 and Rust 1.95 toolchains
+
 * Sat Mar 02 2024 Anatolii Vorona <vorona.tolik@gmail.com>
 - update v20.3.0
 
