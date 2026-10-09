@@ -138,3 +138,63 @@ diff --git a/src/Makefile.am b/src/Makefile.am
  	printf '%s\n' "$$state" > $@.tmp; \
  	if cmp -s $@.tmp $@; then rm -f $@.tmp; else mv -f $@.tmp $@; fi
  
+diff --git a/src/rust/src/dep-trees/p21-expect.txt b/src/rust/src/dep-trees/p21-expect.txt
+--- a/src/rust/src/dep-trees/p21-expect.txt
++++ b/src/rust/src/dep-trees/p21-expect.txt
+@@ -151 +151 @@
+-│   ├── ethnum v1.5.0
++│   ├── ethnum v1.5.3
+diff --git a/src/rust/src/dep-trees/p22-expect.txt b/src/rust/src/dep-trees/p22-expect.txt
+--- a/src/rust/src/dep-trees/p22-expect.txt
++++ b/src/rust/src/dep-trees/p22-expect.txt
+@@ -232 +232 @@
+-│   ├── ethnum v1.5.0
++│   ├── ethnum v1.5.3
+diff --git a/src/rust/src/dep-trees/p23-expect.txt b/src/rust/src/dep-trees/p23-expect.txt
+--- a/src/rust/src/dep-trees/p23-expect.txt
++++ b/src/rust/src/dep-trees/p23-expect.txt
+@@ -234 +234 @@
+-│   ├── ethnum v1.5.0
++│   ├── ethnum v1.5.3
+@@ -256 +256 @@
+-│   │   │   ├── ethnum v1.5.0
++│   │   │   ├── ethnum v1.5.3
+@@ -285 +285 @@
+-│   │   ├── ethnum v1.5.0
++│   │   ├── ethnum v1.5.3
+diff --git a/src/rust/src/dep-trees/p24-expect.txt b/src/rust/src/dep-trees/p24-expect.txt
+--- a/src/rust/src/dep-trees/p24-expect.txt
++++ b/src/rust/src/dep-trees/p24-expect.txt
+@@ -234 +234 @@
+-│   ├── ethnum v1.5.0
++│   ├── ethnum v1.5.3
+@@ -256 +256 @@
+-│   │   │   ├── ethnum v1.5.0
++│   │   │   ├── ethnum v1.5.3
+@@ -285 +285 @@
+-│   │   ├── ethnum v1.5.0
++│   │   ├── ethnum v1.5.3
+diff --git a/src/rust/src/dep-trees/p25-expect.txt b/src/rust/src/dep-trees/p25-expect.txt
+--- a/src/rust/src/dep-trees/p25-expect.txt
++++ b/src/rust/src/dep-trees/p25-expect.txt
+@@ -238 +238 @@
+-│   ├── ethnum v1.5.0
++│   ├── ethnum v1.5.3
+@@ -260 +260 @@
+-│   │   │   ├── ethnum v1.5.0
++│   │   │   ├── ethnum v1.5.3
+@@ -289 +289 @@
+-│   │   ├── ethnum v1.5.0
++│   │   ├── ethnum v1.5.3
+diff --git a/src/rust/src/dep-trees/p26-expect.txt b/src/rust/src/dep-trees/p26-expect.txt
+--- a/src/rust/src/dep-trees/p26-expect.txt
++++ b/src/rust/src/dep-trees/p26-expect.txt
+@@ -246 +246 @@
+-│   ├── ethnum v1.5.0
++│   ├── ethnum v1.5.3
+@@ -268 +268 @@
+-│   │   │   ├── ethnum v1.5.0
++│   │   │   ├── ethnum v1.5.3
+@@ -297 +297 @@
+-│   │   ├── ethnum v1.5.0
++│   │   ├── ethnum v1.5.3
